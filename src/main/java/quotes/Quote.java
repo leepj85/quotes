@@ -40,7 +40,7 @@ public class Quote {
     }
     public String toString(){
         String returnString = "";
-        returnString = this.author + ": " + this.text;
+        returnString = "Author: " + this.author + "\nQuote: " + this.text;
         return returnString;
     }
 }
