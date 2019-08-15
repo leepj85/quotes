@@ -1,5 +1,5 @@
 ### Quotes
-####Feature Task
+#### Feature Task
 - Use quotes file provided (src/main/resources/quotes.json) and display a random quote and author from the file each time the application is run.
 - Use GSON to parse the json file
 
