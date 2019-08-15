@@ -20,7 +20,7 @@
     - java.io.FileNotFoundException
     - java.io.FileReader;
 
-#### Colloborators
+#### Collaborators
 - Peter Lee
 - Promila Tamang
 - Padma Ganapathi
