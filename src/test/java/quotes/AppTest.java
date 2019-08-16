@@ -8,8 +8,10 @@ import com.google.gson.stream.JsonReader;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +20,7 @@ public class AppTest {
     @Test
     public void testQuoteHasAnAuthor() throws FileNotFoundException {
         String filePath = "src/main/resources/quotes.json";
-        String newQuote = App.returnQuote(filePath);
+        String newQuote = App.getFileQuote(filePath);
         assertTrue(newQuote.contains("Author"));
     }
     @Test
@@ -32,10 +34,8 @@ public class AppTest {
     @Test
     public void testQuoteHasText() throws FileNotFoundException {
         String filePath = "src/main/resources/quotes.json";
-        String newQuote = App.returnQuote(filePath);
+        String newQuote = App.getFileQuote(filePath);
         assertTrue(newQuote.contains("Quote"));
-        newQuote.
-
     }
     @Test
     public void testRandomNumberGenerator() throws FileNotFoundException {
@@ -49,6 +49,13 @@ public class AppTest {
         assertTrue("Error, random is too high", high >= newRandom);
         assertTrue("Error, random is too low",  low  <= newRandom);
 
+    }
+
+    @Test
+    public void testStarWarsQuote() throws IOException {
+        App.getStarWarsQuote("http://swquotesapi.digitaljedi.dk/api/SWQuote/RandomStarWarsQuote");
+        File checkfile = new File("src/main/resources/starwars-quotes.json");
+        assertTrue(checkfile.length() != 0 );
     }
 
 }

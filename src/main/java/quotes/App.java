@@ -6,16 +6,69 @@ package quotes;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) throws FileNotFoundException {
-       String newQuote = returnQuote("src/main/resources/quotes.json");
-       System.out.println(newQuote);
+    public static void main(String[] args) throws IOException {
+        getStarWarsQuote("http://swquotesapi.digitaljedi.dk/api/SWQuote/RandomStarWarsQuote");
+
+//       String newQuote = getFileQuote("src/main/resources/quotes.json");
+//       System.out.println(newQuote);
     }
 
-    public static String returnQuote(String filePath) throws FileNotFoundException {
+    public static void getStarWarsQuote(String starWarsUrl) throws IOException {
+
+        try {
+            URL url = new URL(starWarsUrl);
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+
+            Gson gson = new Gson();
+            StarWarsQuote starWarsQuote = gson.fromJson(reader, StarWarsQuote.class);
+            System.out.println(starWarsQuote);
+            writeToFile(starWarsQuote);
+
+        } catch (IOException e) {
+            System.out.println("The following exception was hit: " + e + "\nUsing local quote's file instead...");
+            String newQuote = getFileQuote("src/main/resources/quotes.json");
+            System.out.println(newQuote);
+        }
+    }
+
+    public  static void writeToFile(StarWarsQuote q) throws IOException {
+
+        Gson gson = new Gson();
+        String quote = gson.toJson(q);
+//        System.out.println(quote);
+        String jsonFormattedQuote = quote;
+//        System.out.println(jsonFormattedQuote);
+
+        String currentFile = read("src/main/resources/starwars-quotes.json");
+        String addString = "";
+        if(currentFile.isBlank()) {
+            addString = jsonFormattedQuote;
+        } else {
+            addString = currentFile + ", " + jsonFormattedQuote;
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/starwars-quotes.json"));
+        writer.write(addString);
+        writer.close();
+    }
+
+    private static String read(String s) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(s));
+        String output = "";
+        while(scanner.hasNextLine()){
+            output += scanner.nextLine();
+        }
+        return output;
+    }
+
+    public static String getFileQuote(String filePath) throws FileNotFoundException {
         Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader(filePath));
         Quote[] quotes = gson.fromJson(reader, Quote[].class);
